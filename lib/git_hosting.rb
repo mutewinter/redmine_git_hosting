@@ -1,5 +1,3 @@
-require 'lockfile'
-require 'net/ssh'
 require 'tempfile'
 require 'tmpdir'
 
@@ -396,7 +394,6 @@ module GitHosting
 					#check whether we're adding a new repo
 					if orig_repos[ repo_name ] == nil
 						changed = true
-						add_route_for_project(project)
 						new_repos.push repo_name
 						new_projects.push project
 
@@ -437,12 +434,8 @@ module GitHosting
 						write_user_keys.push key.identifier
 					end
 
-					#git daemon
-					if (project.repository.extra.git_daemon == 1 || project.repository.extra.git_daemon == nil )  && project.is_public
-						read_user_keys.push "daemon"
-					end
-
 					conf.set_read_user repo_name, read_user_keys
+					conf.set_read_user repo_name, "@all"
 					conf.set_write_user repo_name, write_user_keys
 				end
 			end

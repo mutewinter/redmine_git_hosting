@@ -1,4 +1,16 @@
-# Redmine Git Hosting Plugin (v0.4.2)
+# Redmine Git Hosting Plugin Private Repositories ONLY Fork
+
+## Fork Information
+
+Forked from [v0.4.2](https://github.com/ericpaulbishop/redmine_git_hosting/tree/0.4.2) of [ericpaulbishop's redmine_githosting pluign](https://github.com/ericpaulbishop/redmine_git_hosting).
+
+## Purpose
+
+I have removed anything that would allow this plugin to serve public
+repositories. However, the git-daemon is still enabled by default for
+projects. To fix this, I removed the git-daemon from my system.
+
+# Original Readme
 
 A ChiliProject / Redmine plugin which makes configuring your own git hosting easy. This plugin allows straightforward management
 of gitolite and associated public keys, the git daemon, and integrates code from Scott Schacon's "grack" utility

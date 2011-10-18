@@ -18,7 +18,7 @@
 			guGitUser="<%= Setting.plugin_redmine_git_hosting['gitUser'] %>"
 			guGitServer="<%= Setting.plugin_redmine_git_hosting['gitServer'] %>"
 			guHttpBase="<%= Setting.plugin_redmine_git_hosting['httpServer'] %>".replace(/\/$/, "")
-			guHttpProto="<%=  project.repository.extra[:git_http].to_s == "2" ? "http" : "https" %>"
+			guHttpProto="https";
 
 			window.onload = setGitUrlOnload
 
@@ -27,7 +27,7 @@
 		</script>
 	<% end %>
 
-	<% if (project.module_enabled?(:repository) && Setting.plugin_redmine_git_hosting['gitRepositoriesShowUrl'].to_s != "false" ) && ((!User.current.anonymous?) || project.repository.extra[:git_http].to_s != "0" || (project.is_public && project.repository.extra[:git_daemon].to_s != "0" )) %>
+	<% if (project.module_enabled?(:repository) && Setting.plugin_redmine_git_hosting['gitRepositoriesShowUrl'].to_s != "false" ) && (!User.current.anonymous?) %>
 		<div class="box">
 			<h3>Git Repository</h3>
 			<div id="git_url_box">
@@ -35,12 +35,6 @@
 					<% if !User.current.anonymous? %>
 						<li><a id="git_url_ssh"  href="javascript:void(0)">SSH</a></li>
 					<% end %>
-					<% if project.repository.extra[:git_http].to_s != "0" %>
-						<li><a id="git_url_http" href="javascript:void(0)">HTTP</a></li>
-					<% end %>
-					<%  if project.is_public && project.repository.extra[:git_daemon].to_s != "0" %>
-						<li><a id="git_url_git"  href="javascript:void(0)">Git</a></li>
-					<%  end %>
 				</ul>
 				<input id="git_url_text" name="git_url_text" readonly="readonly" value="" />
 				<div id="clipboard_container" title="<%= l(:label_copy_to_clipboard) %>" style="display: none;">

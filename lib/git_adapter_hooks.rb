@@ -130,7 +130,7 @@ module GitHosting
 			end
 
 			repo_path = File.join(Setting.plugin_redmine_git_hosting['gitRepositoryBasePath'], GitHosting.repository_name(project))
-			hook_key = project.repository.extra.key
+			hook_key = project.repository.extra.key unless project.repository.extra.nil?
 			%x[#{GitHosting.git_exec} --git-dir='#{repo_path}.git' config hooks.redmine_gitolite.key "#{hook_key}"]
 			%x[#{GitHosting.git_exec} --git-dir='#{repo_path}.git' config hooks.redmine_gitolite.projectid "#{project.identifier}"]
 		end
