@@ -341,6 +341,37 @@ module GitHosting
 
 	end
 
+  # For deleting repositories that are dangling after the deletion of a project
+  # when deleteGitRepositories was not true. Meant to be run at script/console
+  def self.force_delete_repository_by_name(repo_name)
+    clone_or_pull_gitolite_admin
+
+    local_dir = get_tmp_dir()
+    conf = GitoliteConfig.new(File.join(local_dir, 'gitolite-admin', 'conf', 'gitolite.conf'))
+
+    if conf.all_repos[repo_name]
+      conf.delete_repo(repo_name)
+    else
+      raise RepoNotFound
+    end
+
+    if conf.changed?
+      conf.save
+      changed = true
+    end
+
+    if changed
+      %x[env GIT_SSH=#{gitolite_ssh()} git --git-dir='#{local_dir}/gitolite-admin/.git' --work-tree='#{local_dir}/gitolite-admin' add keydir/*]
+      %x[env GIT_SSH=#{gitolite_ssh()} git --git-dir='#{local_dir}/gitolite-admin/.git' --work-tree='#{local_dir}/gitolite-admin' add conf/gitolite.conf]
+      %x[env GIT_SSH=#{gitolite_ssh()} git --git-dir='#{local_dir}/gitolite-admin/.git' --work-tree='#{local_dir}/gitolite-admin' config user.email '#{Setting.mail_from}']
+      %x[env GIT_SSH=#{gitolite_ssh()} git --git-dir='#{local_dir}/gitolite-admin/.git' --work-tree='#{local_dir}/gitolite-admin' config user.name 'Redmine']
+      %x[env GIT_SSH=#{gitolite_ssh()} git --git-dir='#{local_dir}/gitolite-admin/.git' --work-tree='#{local_dir}/gitolite-admin' commit -a -m 'updated by Redmine' ]
+      %x[env GIT_SSH=#{gitolite_ssh()} git --git-dir='#{local_dir}/gitolite-admin/.git' --work-tree='#{local_dir}/gitolite-admin' push ]
+
+      puts "#{repo_name} may now be deleted from the file system (/srv/git/repositories/#{repo_name})"
+    end
+  end
+
 	@@recursionCheck = false
 	def self.update_repositories(projects, is_repo_delete)
 
