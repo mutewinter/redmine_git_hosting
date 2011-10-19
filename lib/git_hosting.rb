@@ -361,12 +361,12 @@ module GitHosting
 
     if conf.changed?
       conf.save
-      %x[env GIT_SSH=#{gitolite_ssh()} git --git-dir='#{local_dir}/gitolite-admin/.git' --work-tree='#{local_dir}/gitolite-admin' add keydir/*]
-      %x[env GIT_SSH=#{gitolite_ssh()} git --git-dir='#{local_dir}/gitolite-admin/.git' --work-tree='#{local_dir}/gitolite-admin' add conf/gitolite.conf]
-      %x[env GIT_SSH=#{gitolite_ssh()} git --git-dir='#{local_dir}/gitolite-admin/.git' --work-tree='#{local_dir}/gitolite-admin' config user.email '#{Setting.mail_from}']
-      %x[env GIT_SSH=#{gitolite_ssh()} git --git-dir='#{local_dir}/gitolite-admin/.git' --work-tree='#{local_dir}/gitolite-admin' config user.name 'Redmine']
-      %x[env GIT_SSH=#{gitolite_ssh()} git --git-dir='#{local_dir}/gitolite-admin/.git' --work-tree='#{local_dir}/gitolite-admin' commit -a -m 'updated by Redmine' ]
-      %x[env GIT_SSH=#{gitolite_ssh()} git --git-dir='#{local_dir}/gitolite-admin/.git' --work-tree='#{local_dir}/gitolite-admin' push ]
+      %x[env GIT_SSH=#{gitolite_ssh()} #{git_exec} --git-dir='#{local_dir}/gitolite-admin/.git' --work-tree='#{local_dir}/gitolite-admin' add keydir/*]
+      %x[env GIT_SSH=#{gitolite_ssh()} #{git_exec} --git-dir='#{local_dir}/gitolite-admin/.git' --work-tree='#{local_dir}/gitolite-admin' add conf/gitolite.conf]
+      %x[env GIT_SSH=#{gitolite_ssh()} #{git_exec} --git-dir='#{local_dir}/gitolite-admin/.git' --work-tree='#{local_dir}/gitolite-admin' config user.email '#{Setting.mail_from}']
+      %x[env GIT_SSH=#{gitolite_ssh()} #{git_exec} --git-dir='#{local_dir}/gitolite-admin/.git' --work-tree='#{local_dir}/gitolite-admin' config user.name 'Redmine']
+      %x[env GIT_SSH=#{gitolite_ssh()} #{git_exec} --git-dir='#{local_dir}/gitolite-admin/.git' --work-tree='#{local_dir}/gitolite-admin' commit -a -m 'updated by Redmine' ]
+      %x[env GIT_SSH=#{gitolite_ssh()} #{git_exec} --git-dir='#{local_dir}/gitolite-admin/.git' --work-tree='#{local_dir}/gitolite-admin' push ]
     end
   end
 
