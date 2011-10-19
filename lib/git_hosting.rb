@@ -343,24 +343,23 @@ module GitHosting
 
   # For deleting repositories that are dangling after the deletion of a project
   # when deleteGitRepositories was not true. Meant to be run at script/console
-  def self.force_delete_repository_by_name(repo_name)
+  def self.force_delete_repositories_by_name(repo_names = [])
     clone_or_pull_gitolite_admin
 
     local_dir = get_tmp_dir()
     conf = GitoliteConfig.new(File.join(local_dir, 'gitolite-admin', 'conf', 'gitolite.conf'))
 
-    if conf.all_repos[repo_name]
-      conf.delete_repo(repo_name)
-    else
-      raise RepoNotFound
+    repo_names.each do |repo_name|
+
+      if conf.all_repos[repo_name]
+        conf.delete_repo(repo_name)
+      else
+        puts "Skipping #{repo_name}, not found in gitolite-admin"
+      end
     end
 
     if conf.changed?
       conf.save
-      changed = true
-    end
-
-    if changed
       %x[env GIT_SSH=#{gitolite_ssh()} git --git-dir='#{local_dir}/gitolite-admin/.git' --work-tree='#{local_dir}/gitolite-admin' add keydir/*]
       %x[env GIT_SSH=#{gitolite_ssh()} git --git-dir='#{local_dir}/gitolite-admin/.git' --work-tree='#{local_dir}/gitolite-admin' add conf/gitolite.conf]
       %x[env GIT_SSH=#{gitolite_ssh()} git --git-dir='#{local_dir}/gitolite-admin/.git' --work-tree='#{local_dir}/gitolite-admin' config user.email '#{Setting.mail_from}']
