@@ -353,6 +353,7 @@ module GitHosting
 
       if conf.all_repos[repo_name]
         conf.delete_repo(repo_name)
+        puts "#{repo_name} may now be deleted from the file system (/srv/git/repositories/#{repo_name})"
       else
         puts "Skipping #{repo_name}, not found in gitolite-admin"
       end
@@ -366,8 +367,6 @@ module GitHosting
       %x[env GIT_SSH=#{gitolite_ssh()} git --git-dir='#{local_dir}/gitolite-admin/.git' --work-tree='#{local_dir}/gitolite-admin' config user.name 'Redmine']
       %x[env GIT_SSH=#{gitolite_ssh()} git --git-dir='#{local_dir}/gitolite-admin/.git' --work-tree='#{local_dir}/gitolite-admin' commit -a -m 'updated by Redmine' ]
       %x[env GIT_SSH=#{gitolite_ssh()} git --git-dir='#{local_dir}/gitolite-admin/.git' --work-tree='#{local_dir}/gitolite-admin' push ]
-
-      puts "#{repo_name} may now be deleted from the file system (/srv/git/repositories/#{repo_name})"
     end
   end
 
