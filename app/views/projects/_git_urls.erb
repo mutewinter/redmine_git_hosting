@@ -17,6 +17,7 @@
 			guUserIsCommitter= <%= User.current.allowed_to?(:commit_access, project) ? "true" : "false" %> ;
 			guGitUser="<%= Setting.plugin_redmine_git_hosting['gitUser'] %>"
 			guGitServer="<%= Setting.plugin_redmine_git_hosting['gitServer'] %>"
+			guGitSSHPort="<%= Setting.plugin_redmine_git_hosting['gitSSHPort'] %>"
 			guHttpBase="<%= Setting.plugin_redmine_git_hosting['httpServer'] %>".replace(/\/$/, "")
 			guHttpProto="https";
 

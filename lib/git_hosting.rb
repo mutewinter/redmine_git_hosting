@@ -294,7 +294,8 @@ module GitHosting
 			%x[env GIT_SSH=#{gitolite_ssh()} git --git-dir='#{local_dir}/gitolite-admin/.git' --work-tree='#{local_dir}/gitolite-admin' merge FETCH_HEAD]
 		else
 			logger.info "Cloning gitolite-admin repository"
-			%x[env GIT_SSH=#{gitolite_ssh()} git clone #{git_user}@#{Setting.plugin_redmine_git_hosting['gitServer']}:gitolite-admin.git #{local_dir}/gitolite-admin]
+			%x[env GIT_SSH=#{gitolite_ssh()} git clone ssh://#{git_user}@#{Setting.plugin_redmine_git_hosting['gitServer']}:#{Setting.plugin_redmine_git_hosting['gitSSHPort']}/gitolite-admin.git #{local_dir}/gitolite-admin]
+      
 		end
 		%x[chmod 700 "#{local_dir}/gitolite-admin" ]
 		# Make sure we have our hooks setup
