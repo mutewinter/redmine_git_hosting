@@ -32,7 +32,7 @@
 	</p>
 	<p>
 		<label><%= l(:label_git_ssh_port)%></label>
-		<%= text_field_tag("settings[gitSSHPort]", @settings['gitSSHPort'].split(/[\r\n\t ,;]+/).join("\n"), :size => 20) %>
+		<%= text_field_tag("settings[gitSSHPort]", @settings['gitSSHPort'] ? @settings['gitSSHPort'].split(/[\r\n\t ,;]+/).join("\n") : "", :size => 20) %>
 		<br />
 	</p>
 
