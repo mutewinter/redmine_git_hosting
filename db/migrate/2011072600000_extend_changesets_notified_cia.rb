@@ -4,6 +4,6 @@ class ExtendChangesetsNotifiedCia < ActiveRecord::Migration
 	end
 
 	def self.down
-		remove_column :changesets, :notified_cia
+		remove_column :changesets, :notified_cia if self.table_exists?("notified_cia")
 	end
 end
