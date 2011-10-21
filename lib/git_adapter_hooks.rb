@@ -66,7 +66,7 @@ module GitHosting
 		end
 
 		def self.update_global_hook_params
-			hook_url = "http://" + Setting.plugin_redmine_git_hosting['httpServer'] + "/githooks/post-receive"
+			hook_url = "#{Setting.protocol}://#{Setting.plugin_redmine_git_hosting['httpServer']}#{Redmine::Utils::relative_url_root}/githooks/post-receive"
 			logger.debug "Hook URL: #{hook_url}"
 			%x[#{GitHosting.git_exec} config --global hooks.redmine_gitolite.url "#{hook_url}"]
 
