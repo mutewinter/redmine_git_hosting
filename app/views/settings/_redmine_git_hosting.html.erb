@@ -35,6 +35,11 @@
 		<%= text_field_tag("settings[gitSSHPort]", @settings['gitSSHPort'] ? @settings['gitSSHPort'].split(/[\r\n\t ,;]+/).join("\n") : "", :size => 20) %>
 		<br />
 	</p>
+	<p>
+		<label><%= l(:label_git_hook_host_domain)%></label>
+		<%= text_field_tag("settings[gitHookHostDomain]", @settings['gitHookHostDomain'] ? @settings['gitHookHostDomain'].split(/[\r\n\t ,;]+/).join("\n") : "", :size => 20) %>
+		<br />
+	</p>
 
 	<p>
 		<label><%= l(:label_gitolite_identity_file)%></label>
