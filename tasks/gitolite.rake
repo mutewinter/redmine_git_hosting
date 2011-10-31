@@ -46,20 +46,14 @@ namespace :gitolite do
         # Remove periods from repository name for ChiliProject
         fixed_repo_name = repo_name.gsub('.', '_')
 
-        new_repo_path = "/srv/git/repositories/#{username ? "#{username}/" : ""}#{fixed_repo_name}.git"
+        new_repo_path = "/srv/git/repositories/#{parent_project_identifier ? "#{parent_project_identifier}/" : ""}#{fixed_repo_name}.git"
 
         if File.directory? new_repo_path
           puts "Repository #{new_repo_path} already exists, skipping import."
           next
         end
 
-        puts "Cloning #{repo_folder_path} to #{new_repo_path}"
-
-        # Clone the existing repo into a bare repo in the repositories
-        # folder
-        command = "#{GitHosting.git_exec} clone --bare #{Dir.pwd}/#{repo_folder_path} #{new_repo_path}" 
-        puts command
-        puts %x[#{command}]
+        clone_bare_repo(repo_folder_path, new_repo_path)
 
         puts "Creating project #{repo_name}"
         project = Project.create(
@@ -98,4 +92,32 @@ namespace :gitolite do
       end # if File.directory?
     end # git_repos_to_import.each
   end # task :import_projects
+
+	desc "Clone repos"
+	task :clone_repos, [:parent] => :environment do |t, args|
+    git_repos_to_import = Dir.glob('import_git_projects/*')
+    git_repos_to_import.each do |repo_folder_path|
+      if File.directory? repo_folder_path
+        repo_name = File.basename repo_folder_path
+        puts "Processing #{repo_name}"
+
+        # Remove periods from repository name for ChiliProject
+        fixed_repo_name = repo_name.gsub('.', '_')
+        new_repo_path = "/srv/git/repositories/#{args.parent ? "#{args.parent}/" : ""}#{fixed_repo_name}.git"
+
+        clone_bare_repo(repo_folder_path, new_repo_path)
+      end
+    end
+  end
+
+end
+
+def clone_bare_repo(repo_directory, repo_destination)
+  puts "Cloning #{repo_directory} to #{repo_destination}"
+
+  # Clone the existing repo into a bare repo in the repositories
+  # folder
+  command = "#{GitHosting.git_exec} clone --bare #{Dir.pwd}/#{repo_directory} #{repo_destination}" 
+  puts command
+  puts %x[#{command}]
 end
