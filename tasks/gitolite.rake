@@ -15,7 +15,7 @@ namespace :gitolite do
     username = args.user
     parent_project_identifier = args.parent
 
-    if username
+    if username and username != 'nil'
       if user = User.find_by_login(username)
         puts "Found #{user} with login #{username}."
       else
