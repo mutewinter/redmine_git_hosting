@@ -10,6 +10,7 @@ namespace :gitolite do
 		Repository.fetch_changesets
 	end
 
+  # Usage: rake gitolite:import_projects[user,parent]
 	desc "Import and create projects from git repositories. Arguments [user login, parent project identifier]"
 	task :import_projects, [:user, :parent] => :environment do |t, args|
     username = args.user
@@ -104,6 +105,11 @@ namespace :gitolite do
         # Remove periods from repository name for ChiliProject
         fixed_repo_name = repo_name.gsub('.', '_')
         new_repo_path = "/srv/git/repositories/#{args.parent ? "#{args.parent}/" : ""}#{fixed_repo_name}.git"
+
+        if existing_project = Project.find_by_identifier(fixed_repo_name)
+          # Clear the repository cache for the existing project if it exists
+          GitHosting::clear_cache_for_project(existing_project)
+        end
 
         clone_bare_repo(repo_folder_path, new_repo_path)
       end
