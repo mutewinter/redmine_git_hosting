@@ -48,19 +48,6 @@
 			<p><%= label_tag('repository_scm', l(:label_scm)) %><%= scm_select_tag(@repository) %></p>
 
 			<% if @repository && @repository.is_a?(Repository::Git) %>
-				<%
-					mirror_pubkey = GitHosting.mirror_push_public_key
-					extra_vals = { :git_daemon=>"0", :git_http=>"0", :notify_cia=>"0" }
-					extra_vals.each_key do |e|
-						begin
-							val = @repository.extra[e]
-							if !val.nil?
-								extra_vals[e] = val.to_s
-							end
-						rescue
-						end
-					end
-				%>
 				<br/>
 			<% else %>
 				<%= repository_field_tags(f, @repository) if @repository %>

@@ -25,17 +25,6 @@ module GitHosting
 
 			end
 
-			def disable_git_daemon_if_not_public
-				if @project.repository != nil
-					if @project.repository.is_a?(Repository::Git)
-						if @project.repository.extra.git_daemon == 1 && (not @project.is_public )
-							@project.repository.extra.git_daemon = 0;
-							@project.repository.save
-						end
-					end
-				end
-			end
-
 			def update_git_repo_for_new_parent
 				if @project.repository != nil
 					if @project.repository.is_a?(Repository::Git)
@@ -67,7 +56,6 @@ module GitHosting
 				base.send(:after_filter, :git_repo_init, :only=>:create)
 
 				base.send(:before_filter, :update_git_repo_for_new_parent, :only=>:update)
-				base.send(:after_filter, :disable_git_daemon_if_not_public, :only=>:update)
 			end
 		end
 	end
