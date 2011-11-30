@@ -76,8 +76,8 @@ namespace :gitolite do
           :project_id => project.id,
           :url => new_repo_path
         )
-        repo = GitRepositoryExtra.new()
-        repo.extra = e
+        extra = GitRepositoryExtra.new()
+        repo.extra = extra
         repo.save
 
         # Add the user as a manager of the new project
