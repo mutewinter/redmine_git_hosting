@@ -84,21 +84,7 @@ namespace :gitolite do
         end # if user
 
         puts "Creating repository for project"
-        # Add the Git repository
-        # From patches/projects_controller_patch.rb#git_repo_init
-        GitHostingObserver.set_update_active(false)
-        repo = Repository.factory("Git")
-
-        repo_name = project.parent ? File.join(GitHosting::get_full_parent_path(project, true), project.identifier) : project.identifier
-        repo.url = repo.root_url = File.join(Setting.plugin_redmine_git_hosting['gitRepositoryBasePath'], "#{repo_name}.git")
-
-        project.repository = repo
-        repo.save
-        GitHostingObserver.set_update_active(true)
-
-        # From patches/repository_controller_patch.rb
-        GitHosting.update_repositories(project, false)
-        GitHosting.setup_hooks(project)
+        create_repo_for_project(project)
 
       end # if File.directory?
     end # git_repos_to_import.each
@@ -126,6 +112,19 @@ namespace :gitolite do
     end
   end
 
+  # Fixes hooks and update key for repositories that don't have them
+  # Just recreates the repository (same location, without removing the git repo)
+	desc "Fix Project Repo Hooks"
+	task :fix_project_repo_hooks, [:project_identifier] => :environment do |t, args|
+    project_identifier = args.project_identifier
+
+    project = Project.find_by_identifier(project_identifier)
+
+    project.repository.destroy
+
+    create_repo_for_project(project)
+  end
+
 end
 
 def clone_bare_repo(repo_directory, repo_destination)
@@ -141,4 +140,22 @@ def clone_bare_repo(repo_directory, repo_destination)
     puts %x[#{command}]
   end
 
+end
+
+def create_repo_for_project(project)
+  # Add the Git repository
+  # From patches/projects_controller_patch.rb#git_repo_init
+  GitHostingObserver.set_update_active(false)
+  repo = Repository.factory("Git")
+
+  repo_name = project.parent ? File.join(GitHosting::get_full_parent_path(project, true), project.identifier) : project.identifier
+  repo.url = repo.root_url = File.join(Setting.plugin_redmine_git_hosting['gitRepositoryBasePath'], "#{repo_name}.git")
+
+  project.repository = repo
+  repo.save
+  GitHostingObserver.set_update_active(true)
+
+  # From patches/repository_controller_patch.rb
+  GitHosting.update_repositories(project, false)
+  GitHosting.setup_hooks(project)
 end
