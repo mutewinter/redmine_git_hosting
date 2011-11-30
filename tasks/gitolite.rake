@@ -125,6 +125,19 @@ namespace :gitolite do
     create_repo_for_project(project)
   end
 
+  # Fixes all of the children's repos
+	desc "Fix Project Children Repo Hooks"
+	task :fix_project_children_repo_hooks, [:project_identifier] => :environment do |t, args|
+    project_identifier = args.project_identifier
+
+    parent_project = Project.find_by_identifier(project_identifier)
+
+    parent_project.children.each do |project|
+      project.repository.destroy
+
+      create_repo_for_project(project)
+    end
+  end
 end
 
 def clone_bare_repo(repo_directory, repo_destination)
