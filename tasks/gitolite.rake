@@ -96,6 +96,10 @@ namespace :gitolite do
         repo.save
         GitHostingObserver.set_update_active(true)
 
+        # From patches/repository_controller_patch.rb
+        GitHosting.update_repositories(project, false)
+        GitHosting.setup_hooks(project)
+
       end # if File.directory?
     end # git_repos_to_import.each
   end # task :import_projects
