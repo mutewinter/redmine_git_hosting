@@ -121,7 +121,7 @@ namespace :gitolite do
 end
 
 def clone_bare_repo(repo_directory, repo_destination)
-  if Dir.exists? repo_destination
+  if File.exists? repo_destination
     puts "#{repo_destination} already exists, skipping clone."
   else
     puts "Cloning #{repo_directory} to #{repo_destination}"
