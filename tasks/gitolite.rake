@@ -76,6 +76,8 @@ namespace :gitolite do
           :project_id => project.id,
           :url => new_repo_path
         )
+        repo = GitRepositoryExtra.new()
+        repo.extra = e
         repo.save
 
         # Add the user as a manager of the new project
@@ -119,11 +121,16 @@ namespace :gitolite do
 end
 
 def clone_bare_repo(repo_directory, repo_destination)
-  puts "Cloning #{repo_directory} to #{repo_destination}"
+  if Dir.exists? repo_destination
+    puts "#{repo_destination} already exists, skipping clone."
+  else
+    puts "Cloning #{repo_directory} to #{repo_destination}"
 
-  # Clone the existing repo into a bare repo in the repositories
-  # folder
-  command = "#{GitHosting.git_exec} clone --bare #{Dir.pwd}/#{repo_directory} #{repo_destination}" 
-  puts command
-  puts %x[#{command}]
+    # Clone the existing repo into a bare repo in the repositories
+    # folder
+    command = "#{GitHosting.git_exec} clone --bare #{Dir.pwd}/#{repo_directory} #{repo_destination}" 
+    puts command
+    puts %x[#{command}]
+  end
+
 end
