@@ -69,21 +69,12 @@ namespace :gitolite do
           puts "Assigning parent #{parent_project}"
           project.set_parent!(parent_project)
         end
-
-        puts "Creating repository for project"
-        # Add the Git repository
-        repo = Repository::Git.create(
-          :project_id => project.id,
-          :url => new_repo_path
-        )
-        extra = GitRepositoryExtra.new()
-        repo.extra = extra
-        repo.save
-
+        
         # Add the user as a manager of the new project
         if user
           puts "Adding #{user} as project manager"
 
+          # From patches/projects_controller_patch.rb#git_repo_init
           membership = Member.new(
             :principal => user,
             :project_id => project.id,
@@ -91,6 +82,19 @@ namespace :gitolite do
           )
           membership.save
         end # if user
+
+        puts "Creating repository for project"
+        # Add the Git repository
+        # From patches/projects_controller_patch.rb#git_repo_init
+        GitHostingObserver.set_update_active(false)
+        repo = Repository.factory("Git")
+
+        repo_name = project.parent ? File.join(GitHosting::get_full_parent_path(project, true), project.identifier) : project.identifier
+        repo.url = repo.root_url = File.join(Setting.plugin_redmine_git_hosting['gitRepositoryBasePath'], "#{repo_name}.git")
+
+        project.repository = repo
+        repo.save
+        GitHostingObserver.set_update_active(true)
 
       end # if File.directory?
     end # git_repos_to_import.each
