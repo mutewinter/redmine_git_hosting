@@ -48,6 +48,9 @@
 			<p><%= label_tag('repository_scm', l(:label_scm)) %><%= scm_select_tag(@repository) %></p>
 
 			<% if @repository && @repository.is_a?(Repository::Git) %>
+				<%
+					mirror_pubkey = GitHosting.mirror_push_public_key
+				%>
 				<br/>
 			<% else %>
 				<%= repository_field_tags(f, @repository) if @repository %>
