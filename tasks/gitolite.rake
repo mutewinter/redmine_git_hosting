@@ -45,7 +45,7 @@ namespace :gitolite do
         puts "Processing #{repo_name}"
 
         # Remove periods from repository name for ChiliProject
-        fixed_repo_name = repo_name.gsub('.', '_')
+        fixed_repo_name = repo_name.gsub('.', '_').downcase
 
         new_repo_path = "/srv/git/repositories/#{parent_project_identifier ? "#{parent_project_identifier}/" : ""}#{fixed_repo_name}.git"
 
