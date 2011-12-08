@@ -88,6 +88,7 @@ namespace :gitolite do
 
       end # if File.directory?
     end # git_repos_to_import.each
+    puts "Import complete. Be sure to clear our import_git_projects"
   end # task :import_projects
 
 	desc "Clone repos"
@@ -110,6 +111,7 @@ namespace :gitolite do
         clone_bare_repo(repo_folder_path, new_repo_path)
       end
     end
+    puts "Clone complete. Be sure to clear our import_git_projects"
   end
 
   # Fixes hooks and update key for repositories that don't have them
