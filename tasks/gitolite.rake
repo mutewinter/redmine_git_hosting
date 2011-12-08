@@ -148,7 +148,7 @@ def clone_bare_repo(repo_directory, repo_destination)
 
     # Clone the existing repo into a bare repo in the repositories
     # folder
-    command = "#{GitHosting.git_exec} clone --bare #{Dir.pwd}/#{repo_directory} #{repo_destination}" 
+    command = "#{GitHosting.git_exec} clone --bare '#{Dir.pwd}/#{repo_directory}' #{repo_destination}" 
     puts command
     puts %x[#{command}]
   end
