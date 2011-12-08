@@ -83,7 +83,7 @@ namespace :gitolite do
           membership.save
         end # if user
 
-        puts "Creating repository for project"
+        puts "Creating repository for project #{project}"
         create_repo_for_project(project)
 
       end # if File.directory?
@@ -158,12 +158,11 @@ def clone_bare_repo(repo_directory, repo_destination)
   if File.exists? repo_destination
     puts "#{repo_destination} already exists, skipping clone."
   else
-    puts "Cloning #{repo_directory} to #{repo_destination}"
+    puts "Cloning #{repo_directory}"
 
     # Clone the existing repo into a bare repo in the repositories
     # folder
     command = "#{GitHosting.git_exec} clone --bare '#{Dir.pwd}/#{repo_directory}' #{repo_destination}" 
-    puts command
     puts %x[#{command}]
   end
 
