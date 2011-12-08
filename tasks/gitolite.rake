@@ -103,16 +103,24 @@ namespace :gitolite do
         fixed_repo_name = repo_name.gsub('.', '_')
         new_repo_path = "/srv/git/repositories/#{args.parent ? "#{args.parent}/" : ""}#{fixed_repo_name}.git"
 
-        if existing_project = Project.find_by_identifier(fixed_repo_name)
-          # Clear the repository cache for the existing project if it exists
-          GitHosting::clear_cache_for_project(existing_project)
+        if File.exists? new_repo_path
+          puts "Repo already exists #{new_repo_path}, aborting."
+          exit
+        else
+          clone_bare_repo(repo_folder_path, new_repo_path)
 
-          unless existing_project.repository
-            create_repo_for_project(project)
+          if existing_project = Project.find_by_identifier(fixed_repo_name)
+            # Clear the repository cache for the existing project if it exists
+
+            if existing_project.repository
+              # Remove the old repo and clear its cache
+              GitHosting::clear_cache_for_project(existing_project)
+              project.repository.destroy
+            end
+
+            create_repo_for_project(existing_project)
           end
         end
-
-        clone_bare_repo(repo_folder_path, new_repo_path)
       end
     end
     puts "Clone complete. Be sure to clear our import_git_projects"
