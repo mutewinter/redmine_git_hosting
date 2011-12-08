@@ -106,6 +106,10 @@ namespace :gitolite do
         if existing_project = Project.find_by_identifier(fixed_repo_name)
           # Clear the repository cache for the existing project if it exists
           GitHosting::clear_cache_for_project(existing_project)
+
+          unless existing_project.repository
+            create_repo_for_project(project)
+          end
         end
 
         clone_bare_repo(repo_folder_path, new_repo_path)
